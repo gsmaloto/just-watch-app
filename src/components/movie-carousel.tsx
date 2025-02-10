@@ -124,7 +124,7 @@ export default function MovieCarousel() {
                 <div className="absolute left-0 bottom-0 bg-gradient-to-t w-full h-2/3 from-black/80 to-transparent z-10" />
 
                 <CardContent className="absolute inset-0 z-20">
-                  <div className="h-full flex flex-col justify-end pl-16 pb-16 max-w-2xl">
+                  <div className="flex flex-col justify-end absolute bottom-4">
                     <h1 className="text-7xl font-bold text-white mb-6 tracking-tight">
                       {movie.title}
                     </h1>
