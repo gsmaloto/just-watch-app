@@ -5,36 +5,27 @@ import { movieDb } from "@/lib/utils";
 import {
   PopularMoviesResponse,
   MovieResult,
-  PopularMoviesRequest,
   MovieNowPlayingResponse,
   TopRatedMoviesResponse,
+  GenresResponse,
 } from "moviedb-promise";
-import { AxiosRequestConfig } from "axios";
-
+import { PARAMS, AXIOS_CONFIG } from "@/constant/request";
 export default async function Home() {
-  const params: PopularMoviesRequest = {
-    page: 1,
-    language: "en",
-    region: "US",
-  };
-
-  const axiosConfig: AxiosRequestConfig = {
-    headers: {
-      Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-    },
-  };
-
   const popularMovies: PopularMoviesResponse = await movieDb.moviePopular(
-    params,
-    axiosConfig
+    PARAMS,
+    AXIOS_CONFIG
   );
   const nowPlaying: MovieNowPlayingResponse = await movieDb.movieNowPlaying(
-    params,
-    axiosConfig
+    PARAMS,
+    AXIOS_CONFIG
   );
   const topRated: TopRatedMoviesResponse = await movieDb.movieTopRated(
-    params,
-    axiosConfig
+    PARAMS,
+    AXIOS_CONFIG
+  );
+  const genreMovieList: GenresResponse = await movieDb.genreMovieList(
+    PARAMS,
+    AXIOS_CONFIG
   );
 
   const allMovies: { title: string; collection: MovieResult[] }[] = [
@@ -54,7 +45,10 @@ export default async function Home() {
 
   return (
     <main className="space-y-10">
-      <MovieCarousel />
+      <MovieCarousel
+        movies={nowPlaying.results ?? []}
+        genreMovieList={genreMovieList.genres ?? []}
+      />
       {allMovies.map((movieCollection) => {
         return (
           <CardGrid title={movieCollection.title} key={movieCollection.title}>

@@ -5,85 +5,21 @@ import { EmblaOptionsType, EmblaCarouselType } from "embla-carousel";
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Play, Info } from "lucide-react";
 import Image from "next/image";
+import { Genre, MovieResult } from "moviedb-promise";
+import BadgeGenre from "./badge-genre";
+import { cn } from "@/lib/utils";
 
-interface Movie {
-  id: number;
-  title: string;
-  poster_path: string;
-  backdrop_path: string;
-  genres: string[];
-  year: string;
-  description: string;
-}
+type CarouselMovieProps = {
+  movies: MovieResult[];
+  genreMovieList: Genre[];
+};
 
-const movies: Movie[] = [
-  {
-    id: 939243,
-    title: "SILO",
-    poster_path: "/d8Ryb8AunYAuycVKDp5HpdWPKgC.jpg",
-    backdrop_path: "/zOpe0eHsq0A2NvNyBbtT6sj53qV.jpg",
-    genres: ["Sci-Fi & Fantasy", "Drama"],
-    year: "2023",
-    description:
-      "In a ruined and toxic future, a community exists in a giant underground silo that plunges hundreds of stories deep. There, men and women live in a society full of...",
-  },
-  {
-    id: 539972,
-    title: "Squid Game 2",
-    poster_path: "/nrlfJoxP1EkBVE9pU62L287Jl4D.jpg",
-    backdrop_path: "/v9Du2HC3hlknAvGlWhquRbeifwW.jpg",
-    genres: ["Drama", "Action & Adventure", "Mystery"],
-    year: "2024",
-    description:
-      "Hundreds of cash-strapped players accept a strange invitation to compete in children's games. Inside, a tempting prize awaits with deadly high stakes.",
-  },
-  {
-    id: 939243,
-    title: "SILO",
-    poster_path: "/d8Ryb8AunYAuycVKDp5HpdWPKgC.jpg",
-    backdrop_path: "/zOpe0eHsq0A2NvNyBbtT6sj53qV.jpg",
-    genres: ["Sci-Fi & Fantasy", "Drama"],
-    year: "2023",
-    description:
-      "In a ruined and toxic future, a community exists in a giant underground silo that plunges hundreds of stories deep. There, men and women live in a society full of...",
-  },
-  {
-    id: 539972,
-    title: "Squid Game 2",
-    poster_path: "/nrlfJoxP1EkBVE9pU62L287Jl4D.jpg",
-    backdrop_path: "/v9Du2HC3hlknAvGlWhquRbeifwW.jpg",
-    genres: ["Drama", "Action & Adventure", "Mystery"],
-    year: "2024",
-    description:
-      "Hundreds of cash-strapped players accept a strange invitation to compete in children's games. Inside, a tempting prize awaits with deadly high stakes.",
-  },
-  {
-    id: 939243,
-    title: "SILO",
-    poster_path: "/d8Ryb8AunYAuycVKDp5HpdWPKgC.jpg",
-    backdrop_path: "/zOpe0eHsq0A2NvNyBbtT6sj53qV.jpg",
-    genres: ["Sci-Fi & Fantasy", "Drama"],
-    year: "2023",
-    description:
-      "In a ruined and toxic future, a community exists in a giant underground silo that plunges hundreds of stories deep. There, men and women live in a society full of...",
-  },
-  {
-    id: 539972,
-    title: "Squid Game 2",
-    poster_path: "/nrlfJoxP1EkBVE9pU62L287Jl4D.jpg",
-    backdrop_path: "/v9Du2HC3hlknAvGlWhquRbeifwW.jpg",
-    genres: ["Drama", "Action & Adventure", "Mystery"],
-    year: "2024",
-    description:
-      "Hundreds of cash-strapped players accept a strange invitation to compete in children's games. Inside, a tempting prize awaits with deadly high stakes.",
-  },
-];
+export default function CarouselMovie(props: CarouselMovieProps) {
+  const { movies, genreMovieList } = props;
 
-export default function CarouselMovie() {
   const OPTIONS: EmblaOptionsType = {
     align: "center",
     loop: true,
@@ -108,21 +44,15 @@ export default function CarouselMovie() {
     <Card className="relative w-full h-[70vh] overflow-hidden bg-black">
       <div className="h-full" ref={emblaRef}>
         <div className="flex h-full">
-          {movies.map((movie, index) => (
+          {movies?.map((movie, index) => (
             <div
               key={index}
               className="flex-[0_0_100%] min-w-0 relative transition-transform duration-300"
             >
               <div className="relative h-full w-full">
-                {/* <img
-                  src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
-                  alt={movie.title}
-                  className="w-full h-full object-cover"
-                /> */}
-
                 <Image
                   src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
-                  alt={movie.title}
+                  alt={movie.title ?? "Untitled"}
                   width={500}
                   height={750}
                   className="w-full h-full object-cover"
@@ -134,33 +64,30 @@ export default function CarouselMovie() {
 
                 <CardContent className="absolute inset-0 z-20">
                   <div className="flex flex-col justify-end absolute bottom-4">
-                    <h1 className="text-7xl font-bold text-white mb-6 tracking-tight">
+                    <h1 className="text-5xl font-bold text-white mb-6 tracking-tight">
                       {movie.title}
                     </h1>
 
                     <div className="flex items-center gap-3 mb-6">
-                      <Badge
-                        variant="secondary"
-                        className="bg-white/20 text-white"
-                      >
-                        4K UHD
-                      </Badge>
-                      {movie.genres.map((genre, idx) => (
-                        <Badge
-                          key={idx}
-                          variant="outline"
-                          className="text-white/80 border-white/20"
-                        >
-                          {genre}
-                        </Badge>
-                      ))}
+                      {movie?.genre_ids?.map((genreId) => {
+                        const genre = genreMovieList.find(
+                          (genre) => genre.id === genreId
+                        );
+                        return (
+                          <BadgeGenre
+                            key={genreId}
+                            genreId={genreId}
+                            genreName={genre?.name ?? ""}
+                          />
+                        );
+                      })}
                       <span className="text-sm text-white/60">
-                        {movie.year}
+                        {movie.release_date?.split("-")[0]}
                       </span>
                     </div>
 
-                    <p className="text-lg text-white/80 mb-8 line-clamp-2">
-                      {movie.description}
+                    <p className="text-lg text-white/80 mb-8 line-clamp-2 lg:max-w-[50%] lg:line-clamp-3">
+                      {movie.overview}
                     </p>
 
                     <div className="flex gap-4">
@@ -214,11 +141,12 @@ export default function CarouselMovie() {
           <button
             key={index}
             onClick={() => onDotButtonClick(index)}
-            className={`h-1 rounded-full transition-all duration-300 ${
+            className={cn(
+              "h-1 rounded-full transition-all duration-300 ease-in-out",
               index === selectedIndex
                 ? "w-8 bg-white"
-                : "w-4 bg-white/30 hover:bg-white/50"
-            }`}
+                : "w-4 bg-white/30 hover:w-6 hover:bg-white/60"
+            )}
           />
         ))}
       </div>
