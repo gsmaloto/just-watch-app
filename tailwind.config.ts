@@ -61,5 +61,15 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function ({ addUtilities }: { addUtilities: (utilities: any) => void }) {
+      addUtilities({
+        ".clip-left-point": {
+          "clip-path":
+            "polygon(100% 0%, 100% 52%, 100% 100%, 25% 100%, 0% 50%, 25% 0%)",
+        },
+      });
+    },
+  ],
 } satisfies Config;

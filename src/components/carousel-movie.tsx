@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Play, Info } from "lucide-react";
+import Image from "next/image";
 
 interface Movie {
   id: number;
@@ -82,7 +83,7 @@ const movies: Movie[] = [
   },
 ];
 
-export default function MovieCarousel() {
+export default function CarouselMovie() {
   const OPTIONS: EmblaOptionsType = {
     align: "center",
     loop: true,
@@ -104,7 +105,7 @@ export default function MovieCarousel() {
   } = usePrevNextButtons(emblaApi);
 
   return (
-    <Card className="relative w-full h-[85vh] overflow-hidden bg-black">
+    <Card className="relative w-full h-[70vh] overflow-hidden bg-black">
       <div className="h-full" ref={emblaRef}>
         <div className="flex h-full">
           {movies.map((movie, index) => (
@@ -113,9 +114,17 @@ export default function MovieCarousel() {
               className="flex-[0_0_100%] min-w-0 relative transition-transform duration-300"
             >
               <div className="relative h-full w-full">
-                <img
+                {/* <img
                   src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
                   alt={movie.title}
+                  className="w-full h-full object-cover"
+                /> */}
+
+                <Image
+                  src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
+                  alt={movie.title}
+                  width={500}
+                  height={750}
                   className="w-full h-full object-cover"
                 />
 
