@@ -4,7 +4,8 @@ import { movieDb } from "@/lib/utils";
 import { CreditsResponse, MovieResponse } from "moviedb-promise";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftIcon, ArrowRightIcon, StarIcon } from "lucide-react";
+import { ArrowLeftIcon, PlayIcon, StarIcon } from "lucide-react";
+import BtnAction from "./components/btn-action";
 
 type Params = Promise<{ id: string }>;
 
@@ -34,10 +35,16 @@ export default async function MoviePage({ params }: { params: Params }) {
                 <ArrowLeftIcon className="w-4 h-4" />
                 Trailer
               </Button>
-              <Button variant="outline">
-                <ArrowRightIcon className="w-4 h-4" />
-                Watch Now
-              </Button>
+              <BtnAction
+                id={id}
+                title={movie.title ?? ""}
+                src={`https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=true`}
+              >
+                <Button>
+                  <PlayIcon fill="white" />
+                  Watch Now
+                </Button>
+              </BtnAction>
             </div>
             {/* Movie Actions */}
 
