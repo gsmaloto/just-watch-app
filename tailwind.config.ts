@@ -71,5 +71,6 @@ export default {
         },
       });
     },
+    require("tailwind-scrollbar"),
   ],
 } satisfies Config;
