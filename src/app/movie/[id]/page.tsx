@@ -1,23 +1,19 @@
 import BadgeGenre from "@/components/badge-genre";
-import { AXIOS_CONFIG, PARAMS } from "@/constant/request";
+import { AXIOS_CONFIG } from "@/constant/request";
 import { movieDb } from "@/lib/utils";
 import { CreditsResponse, MovieResponse } from "moviedb-promise";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon, ArrowRightIcon, StarIcon } from "lucide-react";
 
-interface MoviePageProps {
-  params: {
-    id: string;
-  };
-}
+type Params = Promise<{ id: string }>;
 
-export default async function MoviePage(props: MoviePageProps) {
-  const { id } = props.params;
+export default async function MoviePage({ params }: { params: Params }) {
+  const { id } = await params;
 
   const movie: MovieResponse = await movieDb.movieInfo(id, AXIOS_CONFIG);
   const casts: CreditsResponse = await movieDb.movieCredits(id, AXIOS_CONFIG);
-  console.log(casts);
+
   return (
     <main className="relative">
       <div className="fixed top-0 left-0 w-full h-screen">
