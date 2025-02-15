@@ -1,10 +1,15 @@
 import BadgeGenre from "@/components/badge-genre";
 import { AXIOS_CONFIG } from "@/constant/request";
 import { movieDb } from "@/lib/utils";
-import { CreditsResponse, MovieResponse } from "moviedb-promise";
+import {
+  CreditsResponse,
+  MovieResponse,
+  Video,
+  VideosResponse,
+} from "moviedb-promise";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftIcon, PlayIcon, StarIcon } from "lucide-react";
+import { PlayIcon, StarIcon, VideoIcon } from "lucide-react";
 import BtnAction from "./components/btn-action";
 
 type Params = Promise<{ id: string }>;
@@ -14,6 +19,11 @@ export default async function MoviePage({ params }: { params: Params }) {
 
   const movie: MovieResponse = await movieDb.movieInfo(id, AXIOS_CONFIG);
   const casts: CreditsResponse = await movieDb.movieCredits(id, AXIOS_CONFIG);
+  const videos: VideosResponse = await movieDb.movieVideos(id, AXIOS_CONFIG);
+
+  const trailers: Video | undefined = videos.results?.find(
+    (video) => video.type === "Trailer"
+  );
 
   return (
     <main className="relative">
@@ -31,17 +41,23 @@ export default async function MoviePage({ params }: { params: Params }) {
           <div className="container relative py-6">
             {/* Movie Actions */}
             <div className="absolute -top-6 flex flex-wrap gap-2 w-full justify-center md:justify-end">
-              <Button variant="outline">
-                <ArrowLeftIcon className="w-4 h-4" />
-                Trailer
-              </Button>
+              <BtnAction
+                id={id}
+                title={movie.title ?? ""}
+                src={`https://www.youtube.com/embed/${trailers?.key}`}
+              >
+                <Button variant="secondary" size="lg">
+                  <VideoIcon />
+                  Trailer
+                </Button>
+              </BtnAction>
               <BtnAction
                 id={id}
                 title={movie.title ?? ""}
                 src={`https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=true`}
               >
-                <Button>
-                  <PlayIcon fill="white" />
+                <Button size="lg">
+                  <PlayIcon />
                   Watch Now
                 </Button>
               </BtnAction>
